@@ -1,4 +1,4 @@
-package com.stucom.animationtest.engine;
+package cat.flx.ballgame;
 
 import android.content.Context;
 import android.graphics.Bitmap;

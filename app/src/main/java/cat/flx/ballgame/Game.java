@@ -1,5 +1,6 @@
 package cat.flx.ballgame;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.hardware.SensorEvent;
@@ -7,15 +8,19 @@ import android.hardware.SensorManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.OptionalDataException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+
+
 class Game {
 
     private static final int SHAKE_THRESHOLD = 700;
     private GameEngine gameEngine;
+    private BitmapSet bitmapSet;
 
     private final int ballsPerTouch = 7;
 
@@ -27,10 +32,17 @@ class Game {
     private long lastUpdate;
 
     private List<Ball> balls = new ArrayList<>();
-
+    private int bitmapRepeat;
+    private int bitmapIndex;
+    private int[][] animations = new int[][]{
+            new int[] {0,1,2,3}, //caminar dreta
+            new int[] {6,7,8,9}, //caminar esq
+            new int[] {12} //Esperar
+    };
 
     Game(GameEngine gameEngine) {
         this.gameEngine = gameEngine;
+        this.bitmapSet = new BitmapSet(gameEngine.getContext(), R.raw.sprites, R.raw.sprites_info);
 
         mainBall = new BallBuilder(this)
                 .setStartingPosition(getScreenWidth() / 2, getScreenHeight() / 2)
@@ -62,7 +74,7 @@ class Game {
 //            ball2.setAcceleration(ax,ay);
 //        }
 
-        if ((curTime - lastUpdate) > 800) {
+        if ((curTime - lastUpdate) > 730) {
             long deltaTime = (curTime - lastUpdate);
             lastUpdate = curTime;
 
@@ -102,10 +114,19 @@ class Game {
     void draw(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
         mainBall.draw(canvas);
-
         for (Iterator<Ball> iterator = balls.iterator(); iterator.hasNext(); ) {
             iterator.next().draw(canvas);
         }
+
+        canvas.scale(8,8);
+
+        bitmapRepeat = (bitmapRepeat +1) % 2;
+        if (bitmapRepeat == 0)
+            bitmapIndex = (bitmapIndex +1) % animations[0].length;
+
+        Bitmap bitmap = bitmapSet.getBitmap(animations[0][bitmapIndex]);
+        canvas.drawBitmap(bitmap,0,0,null);
+
     }
 
     public List<Ball> getBalls() {

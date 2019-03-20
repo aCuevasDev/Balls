@@ -14,9 +14,12 @@ class Ball {
     private float ax, ay;
     private int size = 50;
     private int color = Color.WHITE;
+
     private int factor = 1;
     private int elapsedTime = 0;
     private boolean erasing = false;
+
+    private float constAX, constAY;
 
     Ball(Game game) {
         this.game = game;
@@ -42,12 +45,10 @@ class Ball {
         if (x < size) {
             vx = -vx;
             x += size - x;
-            collision();
         }
         if (y < size) {
             vy = -vy;
             y += size - y;
-            collision();
         }
         if (x > game.getScreenWidth() - size) {
             vx = -vx;
@@ -59,10 +60,6 @@ class Ball {
         }
 
         selfDestruct(deltaTime);
-    }
-
-    private void collision() {
-        game.generateBalls(5);
     }
 
     void draw(Canvas canvas) {
@@ -77,6 +74,10 @@ class Ball {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public void setSize(int size) {
@@ -96,6 +97,38 @@ class Ball {
         if (erasing)
             elapsedTime += deltaTime;
         if (elapsedTime >= 30)
-            game.balls.remove(this);
+            game.getBalls().remove(this);
+    }
+
+    public float getConstAX() {
+        return constAX;
+    }
+
+    public void setConstAX(float constAX) {
+        this.constAX = constAX;
+    }
+
+    public float getConstAY() {
+        return constAY;
+    }
+
+    public void setConstAY(float constAY) {
+        this.constAY = constAY;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setVx(float vx) {
+        this.vx = vx;
+    }
+
+    public void setVy(float vy) {
+        this.vy = vy;
     }
 }

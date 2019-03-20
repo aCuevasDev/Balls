@@ -14,8 +14,7 @@ import java.util.Random;
 
 class Game {
 
-    private static final int SHAKE_THRESHOLD = 700
-            ;
+    private static final int SHAKE_THRESHOLD = 700;
     private GameEngine gameEngine;
 
     private final int ballsPerTouch = 7;
@@ -63,7 +62,7 @@ class Game {
 //            ball2.setAcceleration(ax,ay);
 //        }
 
-        if ((curTime - lastUpdate) > 500) {
+        if ((curTime - lastUpdate) > 800) {
             long deltaTime = (curTime - lastUpdate);
             lastUpdate = curTime;
 
@@ -74,6 +73,15 @@ class Game {
             if (scalarSpeed > SHAKE_THRESHOLD) {
 //                Log.d("speed", "shake detected w/ speed: " + scalarSpeed);
                 Toast.makeText(gameEngine.getContext(), "shake detected w/ speed: " + scalarSpeed, Toast.LENGTH_SHORT).show();
+
+                float vx = ax*deltaTime /100;
+                float vy = ay*deltaTime /100;
+
+                for (Ball ball : balls)
+                {
+                    ball.setVx(vx);
+                    ball.setVy(vy);
+                }
             }
             lastAx = ax;
             lastAy = ay;
@@ -112,12 +120,21 @@ class Game {
         return mainBall;
     }
 
-    public void mainBallTouched(int x,int y) {
+    public void mainBallTouched(int x, int y) {
         //doing an auxiliary list so I don't need to care about erasing data in the balls list
         Log.d("flx", "mainBallTouched: ");
         List<Ball> list = new ArrayList<>();
-        for (int i = 0; i < ballsPerTouch; i++){
-            Ball ball = new BallBuilder(this).setRandomParams(gameEngine).setStartingPosition(x,y).build();
+        for (int i = 0; i < ballsPerTouch; i++) {
+            Ball ball = new BallBuilder(this).setRandomParams(gameEngine).setStartingPosition(x, y).build();
+            list.add(ball);
+        }
+        balls = list;
+    }
+
+    public void genBalls(int x,int y, int quant){
+        List<Ball> list = new ArrayList<>();
+        for (int i = 0; i < quant; i++) {
+            Ball ball = new BallBuilder(this).setRandomParams(gameEngine).setStartingPosition(x, y).build();
             list.add(ball);
         }
         balls = list;

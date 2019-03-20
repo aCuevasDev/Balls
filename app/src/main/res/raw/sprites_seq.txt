@@ -1,0 +1,3 @@
+0:12x28,13,14   // 0 = BONK STANDING
+1:6,7,8,9       // 1 = BONK WALKING LEFT
+2:0,1,2,3       // 2 = BONK WALKING RIGHT

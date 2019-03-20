@@ -16,6 +16,7 @@ public class GameEngine extends View implements Runnable, SensorEventListener {
     private Handler handler;
     private Game game;
     private SensorManager sensorManager;
+    private boolean moved = false;
 
     GameEngine(Context context) {
         super(context);
@@ -36,20 +37,28 @@ public class GameEngine extends View implements Runnable, SensorEventListener {
                 float ballY = game.getMainBall().getY();
                 float ballSize = game.getMainBall().getSize();
 
-                Log.d("flx", "onTouchEvent: ActionDown x: " +x +" y: " +y + " Ball: X: " +ballX + " Y: " +ballY);
-                if ((x < (ballX + ballSize)) && (x > (ballX - ballSize))) {
-                    if ((y < (ballY + ballSize)) && (y > (ballY - ballSize))) // Y AXIS IS INVERTED
-                        Log.d("alx", "onTouchEvent: BallTouched");
-                        game.mainBallTouched(x, y);
-                }
+                Log.d("flx", "onTouchEvent: ActionDown x: " + x + " y: " + y + " Ball: X: " + ballX + " Y: " + ballY);
+//                if ((x < (ballX + ballSize)) && (x > (ballX - ballSize))) {
+//                    if ((y < (ballY + ballSize)) && (y > (ballY - ballSize))) // Y AXIS IS INVERTED
+//                        Log.d("alx", "onTouchEvent: BallTouched");
+//                        game.mainBallTouched(x, y);
+//                }
+                double distToBall = Math.pow(x - ballX, 2) + Math.pow(y - ballY, 2);
+                if (distToBall < Math.pow(ballSize, 2))
+                    game.mainBallTouched(x, y);
                 break;
 
             case MotionEvent.ACTION_MOVE:
-
+                Log.d("flx", "onTouchEvent: Move");
+                moved = true;
                 break;
 
             case MotionEvent.ACTION_UP:
-
+                Log.d("flx", "onTouchEvent: UP");
+                if(moved){
+                    game.genBalls(x,y,10);
+                    moved = false;
+                }
                 break;
         }
 
